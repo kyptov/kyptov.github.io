@@ -59,6 +59,7 @@
         collada.load("203 big transport.dae", function( collada ) {
             console.log(collada);
             transport = collada.scene;
+            transport.scale.set( 10, 10, 10 );
             scene.add( transport );
         });
 
