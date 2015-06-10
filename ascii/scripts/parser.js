@@ -22,7 +22,7 @@
         }
     };
 
-    var clickable = ["input", "button", "textarea"];
+    var clickable = ["button"];
 
     var editable = ["input", "textarea"];
 
@@ -62,20 +62,29 @@
             this._getClickable();
         }
 
+        // Getting all elements can be edit
+        if (this.editable.length === 0) {
+            this._getEditable();
+        }
+
         // all elements
         for (var i = 0, length = this.clickable.length; i < length; i++) {
-
             var el = this.clickable[i];
 
-            if (el.contains(x, y)) {
+            if (el.contains(x, y) && el.type === "button") {
+                // todo fire button action
+                return false;
+            }
+        }
 
-                if (el.type === "button") {
-                    // todo fire button action
-                    return false;
-                } else {
-                    selected = i;
-                    return el.select(x, y).cursor();
-                }
+        // all elements
+        for (i = 0, length = this.editable.length; i < length; i++) {
+
+            el = this.editable[i];
+
+            if (el.contains(x, y)) {
+                selected = i;
+                return el.select(x, y).cursor();
             }
         }
 
