@@ -1,0 +1,229 @@
+/* The MIT License (MIT)
+ *
+ * Copyright (c) 2015 Oliver Bachmann, Karlsruhe, Germany
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+body {
+background:#1a1a1a;
+text-align:left;
+color:#666;
+width:700px;
+font-size:14px;
+font-family:georgia, 'time new romans', serif;
+margin:0 auto;
+padding:0;
+}
+
+a:focus {
+outline: none;
+}
+
+h1 {
+font-size: 34px;
+font-family: verdana, helvetica, arial, sans-serif;
+letter-spacing:-2px;
+color:#9FC54E;
+font-weight:700;
+padding:20px 0 0;
+}
+
+h2 {
+font-size: 24px;
+font-family: verdana, helvetica, arial, sans-serif;
+color:#444444;
+font-weight: 400;
+padding: 0 10px 10px;
+}
+
+h3 {
+font-size:14px;
+font-family:verdana, helvetica, arial, sans-serif;
+letter-spacing:-1px;
+color:#fff;
+font-weight: 700;
+text-transform:uppercase;
+margin:0;
+padding:8px 10px 8px 0;
+}
+
+img{
+float: right;
+margin: 3px 3px 6px 8px;
+padding: 5px;
+background: #222222;
+border: 1px solid #333333;
+}
+
+p {
+color:#cccccc;
+line-height:22px;
+padding: 0 0 10px;
+margin: 20px 0 20px 0;
+}
+
+img {
+border:none;
+}
+
+.content {
+font-style:normal;
+font-family:helvetica, arial, verdana, sans-serif;
+color:#ffffff;
+background:#333333;
+border:1px solid #444444;
+-moz-border-radius-topright: 20px;
+-webkit-border-top-right-radius: 20px;
+-moz-border-radius-bottomleft: 20px;
+-webkit-border-bottom-left-radius: 20px;
+margin: 30px 0 50px;
+padding: 15px 0;
+}
+
+.content p {
+margin: 10px 0;
+padding: 15px 20px;
+}
+
+.panel {
+-webkit-touch-callout: none;
+-webkit-user-select: none;
+-khtml-user-select: none;
+-moz-user-select: none;
+-ms-user-select: none;
+user-select: none;
+position: absolute;
+top: 0px;
+left: 25%;
+display: none;
+background: #000000;
+border:1px solid #111111;
+-moz-border-radius-topright: 20px;
+-webkit-border-top-right-radius: 20px;
+-moz-border-radius-bottomright: 20px;
+-webkit-border-bottom-right-radius: 20px;
+width: 530px;
+height: auto;
+padding: 30px 30px 30px 0px;
+filter: alpha(opacity=85);
+opacity: .85;
+}
+
+.panel p{
+margin: 5px 2px 2px 15px;
+padding: 5px 2px 2px 15px;
+color: #cccccc;
+}
+
+.panel a, .panel a:visited{
+margin: 0;
+padding: 0;
+color: #9FC54E;
+text-decoration: none;
+border-bottom: 1px solid #9FC54E;
+}
+
+.panel a:hover, .panel a:visited:hover{
+margin: 0;
+padding: 0;
+color: #ffffff;
+text-decoration: none;
+border-bottom: 1px solid #ffffff;
+}
+
+a.trigger{
+position: absolute;
+text-decoration: none;
+top: 00px; left: 50%;
+font-size: 16px;
+letter-spacing:-1px;
+font-family: verdana, helvetica, arial, sans-serif;
+color:#fff;
+padding: 20px 40px 20px 15px;
+font-weight: 700;
+background:#333333 url(images/plus.png) 85% 55% no-repeat;
+border:1px solid #444444;
+-moz-border-radius-topright: 20px;
+-webkit-border-top-right-radius: 20px;
+-moz-border-radius-bottomright: 20px;
+-webkit-border-bottom-right-radius: 20px;
+-moz-border-radius-bottomleft: 0px;
+-webkit-border-bottom-left-radius: 0px;
+display: block;
+}
+
+a.trigger:hover{
+position: absolute;
+text-decoration: none;
+top: 00px; left: 50%;
+font-size: 16px;
+letter-spacing:-1px;
+font-family: verdana, helvetica, arial, sans-serif;
+color:#fff;
+padding: 20px 40px 20px 15px;
+font-weight: 700;
+background:#222222 url(images/plus.png) 85% 55% no-repeat;
+border:1px solid #444444;
+-moz-border-radius-topright: 20px;
+-webkit-border-top-right-radius: 20px;
+-moz-border-radius-bottomright: 20px;
+-webkit-border-bottom-right-radius: 20px;
+-moz-border-radius-bottomleft: 0px;
+-webkit-border-bottom-left-radius: 0px;
+display: block;
+}
+
+a.active.trigger {
+background:#222222 url(images/minus.png) 85% 55% no-repeat;
+}
+
+.columns{
+clear: both;
+width: 330px;
+padding: 0 0 20px 0;
+line-height: 22px;
+}
+
+.colleft{
+float: left;
+position:relative;
+left:20px;
+width: 130px;
+line-height: 22px;
+}
+
+.colright{
+position:relative;
+right:20px;
+float: right;
+width: 130px;
+line-height: 22px;
+}
+
+ul{
+padding: 0;
+margin: 0;
+list-style-type: none;
+}
+
+ul li{
+padding: 0;
+margin: 0;
+list-style-type: none;
+}

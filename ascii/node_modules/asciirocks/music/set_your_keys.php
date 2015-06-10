@@ -1,0 +1,5 @@
+<?php
+define("AMAZON_CLOUDFRONT_ACCESS_KEY", "");
+define("AMAZON_CLOUDFRONT_SECRET_KEY", "");
+define("AMAZON_CLOUDFRONT_BUCKET_NAME", "");
+?>

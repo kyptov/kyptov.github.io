@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Ascii Stylesheet</title>
+<script src="node_modules/asciirocks/scripts/codepagedisplay.js" type="text/javascript"></script>
+<script src="node_modules/asciirocks/scripts/buffer.js" type="text/javascript"></script>
+<script src="node_modules/asciirocks/scripts/scrollbar.js" type="text/javascript"></script>
+<script src="node_modules/asciirocks/scripts/jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="node_modules/asciirocks/scripts/jquery-ui-1.10.4.custom.min.js"></script>
+<script src="node_modules/asciirocks/scripts/app.js"></script>
+<script src="node_modules/asciirocks/scripts/interpreter.js"></script>
+<script src="node_modules/asciirocks/scripts/requestanimframe.js"></script>
+<script src="scripts/x256.js"></script>
+<!--<script src="scripts/parse.js"></script>
+<script src="scripts/parse_events.js"></script>-->
+<script src="scripts/Cursor.js"></script>
+<script src="scripts/parser.js"></script>
+<script src="scripts/eventsHandler.js"></script>
+<link rel="stylesheet" href="node_modules/asciirocks/css/panel.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="node_modules/asciirocks/css/style.css" type="text/css" media="screen" />
+<script>
+    var doubleClickStarted = false;
+    var doubleClickInterval;
+    var cursor = new Cursor();
+
+    $(function() {
+        
+	
+        //registerParsedKeyEventListener();
+        
+		// At the start, if there already is some HTML, the user gets asked if he wants to keep the original HTML
+       /* if (localStorage.getItem("html")!=null) {
+            if (confirm('Do you want to keep the HTML you have entered before?')) {
+                $('#ascii_textarea').val(localStorage.getItem("html"));
+            } else {
+                localStorage.clear();
+            }
+        }*/
+        
+		// This defines the screen width in characters
+        width = 160;
+		// Here the height
+        height = 60;
+		// Different modes of showing the characters: Either resized so it fits on the screen, or taking the width of characters for the height
+        resizeToScreen = true;
+
+		// Initializes the canvas object using the image that is available inside the images directory for. The image consists of 8x16px blocks in different colors.
+        codepage = new Codepage("node_modules/asciirocks/images/CO_437_8x16.png", function() {
+
+            setCanvasSize(document.getElementById("ansi"));
+            setANSICanvasSize();
+
+            globalContext = document.getElementById("ansi").getContext("2d");
+
+            doClearScreen(false);
+            tagParser.parse("#ascii_textarea");
+            eventsHandler.init();
+            //switchbutton(); // Shows the canvas right from the start and hides the HTML
+			globalDisplay = new Display();
+        });
+		
+        
+		// This gets called whenever the user clicks on the Canvas
+          //document.getElementById('ansi').addEventListener('mousedown', parsed_mousedown, false);
+        
+        
+    });
+
+	// Gets called from calculateContent and shows the parameter text at the given x and y position on the canvas
+    function printthat(text, x, y, fg_rgb, bg_rgb) {
+
+        // Default white
+        fg_rgb = fg_rgb || [255,255,255];
+
+        // Default black
+        bg_rgb = bg_rgb || [0,0,0];
+
+        var mygoto = cursor.goto(x,y);
+						
+        var fg = cursor.rgb(fg_rgb[0], fg_rgb[1], fg_rgb[2]).foreground.current;
+        var bg = "48"+cursor.rgb(bg_rgb[0], bg_rgb[1], bg_rgb[2]).foreground.current.substring(2);
+        fg = String.fromCharCode(27)+"["+fg+"m";
+        bg = String.fromCharCode(27)+"["+bg+"m";
+						
+    
+		parseANSI(mygoto+fg+bg+text);
+
+    }
+
+	function parseANSI(text) {
+		
+		var data = [];
+		for (var i = 0; i < text.length; i++) {
+	            var asciiCode = text.charCodeAt(i);
+				
+                data.push(asciiCode);
+        }
+             
+        var myBuffer = new Uint8Array(data);                            
+
+		
+		var tmp = new Uint8Array(globalBuffer.byteLength + myBuffer.byteLength);
+                        tmp.set(new Uint8Array(globalBuffer), 0);
+                        tmp.set(new Uint8Array(myBuffer), globalBuffer.byteLength);
+                        globalBuffer=tmp;
+
+	}
+
+	// This is just a test function if the ascii table works and gets properly shown
+    function testAsciiTable() {
+        $('#switchbutton').val('Show HTML');
+        $('#ansi').show();
+        $('#ascii_html').hide();
+        drawAsciiTable();
+    }
+
+	// gets called from testAsciiTable and the only purpose is testing the ascii table.
+    function drawAsciiTable() {
+        for (var i = 0; i < 255; i++)
+        {
+            var y = 0,
+                x = i;
+
+            while (x > 80)
+            {
+                y++;
+                x = x - 81;
+            }
+
+            console.log("x:" + x + "y:" + y);
+
+            codepage.drawChar(ctx, i, 0, 1, x, y);
+        }
+    }
+    
+    /** JS FUNCTIONS CALLED IN PARSE.JS **/
+    
+function parsed_drawChar(ctx, charcode, fg_rgb, bg_rgb, x, y) {
+						
+						var mygoto = cursor.goto(x,y);
+						
+						var fg = cursor.rgb(fg_rgb[0], fg_rgb[1], fg_rgb[2]).foreground.current;
+						var bg = "48"+cursor.rgb(bg_rgb[0], bg_rgb[1], bg_rgb[2]).foreground.current.substring(2);
+						fg = String.fromCharCode(27)+"["+fg+"m";
+						bg = String.fromCharCode(27)+"["+bg+"m";
+						var mychar = String.fromCharCode(charcode);
+						
+						parseANSI(mygoto+fg+bg+mychar);
+
+}
+
+function parsed_showCharacter(bool) {
+    showCharacter(bool);
+}
+
+function parsed_redrawCursor() {
+    redrawCursor(true);
+}
+
+function parsed_setCursorPosX(x) {
+if (typeof(globalDisplay)!="undefined") {
+	var mygoto = cursor.goto(x,globalDisplay.getPosY());
+	
+	parseANSI(mygoto);
+}
+setCursorPosX(x);
+
+}
+function parsed_setCursorPosY(y) {
+	if (typeof(globalDisplay)!="undefined") {
+		var mygoto = cursor.goto(globalDisplay.getPosX(),y);
+		parseANSI(mygoto);
+	}
+	setCursorPosY(y);
+}
+function parsed_getCursorPosX(x) {
+    return cursorPosX;
+}
+function parsed_getCursorPosY(y) {
+    return cursorPosY;
+}
+
+function submit() {
+    alert("SUBMIT");
+}
+
+function showCanvas() {
+    $("#html_view").hide();
+    $("#ansi").show();
+}
+function showHTML() {
+    $("#ansi").hide();
+    $("#html_view").show();
+}
+
+</script>
+    <style>
+        #html_view {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            border: 0;
+            top: 0;
+            overflow: hidden;
+        }
+        #html_view {
+            top: 50px;
+            display: none;
+        }
+        #ansi {
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: block;
+        }
+        #buttons{
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Controls -->
+<div id="buttons">
+    <button onclick="showCanvas();" value="Show Canvas">Show Canvas</button>
+    <button onclick="showHTML();" value="Show HTML">Show HTML</button>
+</div>
+<!-- textarea -->
+<div id="html_view">
+    <!-- This is the textarea which is used for entering the HTML and CSS for showing the page on the canvas -->
+    <label for="ascii_textarea" style="margin-left: 100px;">The HTML:</label>
+    <textarea id="ascii_textarea" style="width:80%;height:80%;margin: 0 auto; display: block;" rows="20" onkeyup="updateAsciiArea();">
+&lt;span data-x="20" data-y="20"&gt;Registration to our community allows you to save your edited levels.&lt;/span&gt;
+&lt;span data-x="20" data-y="22" data-fg="#3caac8"&gt;&lt;input type="button" onclick="register();" value="Do you want to login?"&gt;&lt;/span&gt;
+&lt;form onsubmit="submit();"&gt;
+    &lt;span data-x="20" data-y="25"&gt;Username: &lt;input type="text" name="username" value="1234567890123456789"/&gt;&lt;/span&gt;
+    &lt;span data-x="20" data-y="27"&gt;E-Mail address: &lt;input type="text" name="password" value="2"/&gt;
+    &lt;span data-x="20" data-y="29"&gt;Password: &lt;input type="text" name="password" value="3"/&gt;&lt;span data-x="45"&gt;&lt;/span&gt;
+    &lt;span data-x="20" data-y="31"&gt;Password repetition: &lt;input type="text" name="password" value="4"/&gt;&lt;span data-x="63"&gt;&lt;input type="button" onclick="register();"&gt;&lt;/span&gt;&lt;/span&gt;
+&lt;/form&gt;
+    &lt;textarea cols="40" rows="5" data-x="20" data-y="33"&gt;Textarea text&lt;/textarea&gt;
+    </textarea>
+</div>
+<!-- Canvas -->
+<canvas id="ansi"></canvas>
+</body>
+</html>
