@@ -37,7 +37,6 @@
      * @constructor
      */
     var Parser = function() {
-
         this._init();
     };
 
@@ -71,8 +70,16 @@
         for (var i = 0, length = this.clickable.length; i < length; i++) {
             var el = this.clickable[i];
 
+            // if element under x,y
             if (el.contains(x, y) && el.type === "button") {
-                // todo fire button action
+
+                // fire onclick or empty string
+                eval(el.onclick);
+
+                // If button inside form and onclick without preventDefault - trigger form
+                if (el.form && el.onclick.indexOf("preventDefault") === -1) {
+                    this._submitForm(el.form);
+                }
                 return false;
             }
         }
@@ -131,7 +138,8 @@
                 x: 0,
                 y: 0,
                 fg: defaultColors.text.fg,
-                bg: defaultColors.text.bg
+                bg: defaultColors.text.bg,
+                form: false
             };
 
             // parsing childs
@@ -201,6 +209,38 @@
         this.elements = [];
         this.editable = [];
         this.clickable = [];
+        this.formId = 0;
+        this.forms = {};
+    };
+
+    /**
+     * Submiting the form by formId
+     * @param formId
+     * @private
+     */
+    Parser.prototype._submitForm = function(formId) {
+
+        if (typeof this.forms[formId] === "undefined") {
+            console.log("unknown form id:" + formId);
+            return;
+        }
+
+        var formData = {};
+
+        for (var i = 0, length = this.elements.length; i < length; i++) {
+
+            var el = this.elements[i];
+
+            if (el.form && el.form === formId && el.name) {
+                formData[el.name] = el._text;
+            }
+        }
+
+        console.log(formData);
+
+        // do ajax with formData
+
+        eval(this.forms[formId])
     };
 
     /**
@@ -254,12 +294,19 @@
         } else if (type === "input" || type === "textarea") {
             text = $el.val();
             if ($el.attr("type") === "button") {
-                type = "button"
+                type = "button";
             }
         }
 
         // <form> doesn`t have text
         text = text || "";
+
+        if (type === "form") {
+            var form = "form_" + this.formId++;
+            this.forms[form] = $el.attr("onsubmit");
+        } else {
+            form = parent.form;
+        }
 
         // creating element
         var element = {
@@ -268,7 +315,10 @@
             x: self._getCoord($el, "x", parent),
             y: self._getCoord($el, "y", parent),
             fg: self._getColor($el, "fg", parent),
-            bg: self._getColor($el, "bg", parent)
+            bg: self._getColor($el, "bg", parent),
+            form: form,
+            onclick: $el.attr("onclick") || "",
+            name: $el.attr("name") || false
         };
 
         if (type === "textarea") {
@@ -276,16 +326,13 @@
             element.height = $el.attr("rows");
         }
 
-
-        element = new Element(element);
-
         // prevent store data in closure (memory leaking)
         type = null;
         text = null;
         parent = null;
 
         // add parsed element
-        this.elements.push(element);
+        this.elements.push(new Element(element));
 
         // parsing deeper
         $el.children().each(function() {
@@ -433,13 +480,23 @@
             this._height = 1;
         }
 
+        if (props.type === "input" || props.type === "textarea") {
+            this.name = props.name;
+        }
+
         this.text = this._text = "";
 
         this.textStart = 0;
-        this.textPos = 0;
+
+        if (this.type !== "text") {
+            this.form = props.form;
+        }
+
+        if (this.type === "button") {
+            this.onclick = props.onclick;
+        }
 
         this.addText(text);
-
     };
 
     /**
