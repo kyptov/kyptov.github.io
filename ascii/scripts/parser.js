@@ -457,8 +457,8 @@
     Parser.prototype.constructor = Parser;
 
     // Publish in global
-    if (typeof exports !== 'undefined') {
-        exports.tagParser = new Parser;
+    if (typeof global.exports !== 'undefined') {
+        global.exports.tagParser = new Parser;
     }  else {
         global.tagParser = new Parser;
     }
@@ -475,6 +475,7 @@
 
         this.type = props.type || "text";
 
+        // Colors
         if (props.type === "input" || props.type === "textarea") {
             this.fg = defaultColors.input.fg;
             this.bg = defaultColors.input.bg
@@ -489,23 +490,29 @@
         this._cursorX = 0;
         this._cursorY = 0;
 
+        // Text
         if (props.type === "button") {
             var text = props.text || "Submit";
         } else {
             text = props.text || "";
         }
 
+        // Dimension
         if (props.type === "input") {
             this._width = INPUT_WIDTH;
             this._height = 1;
         } else if (props.type === "textarea") {
-            this._width = props.width || 20;
-            this._height = props.height || 10;
+            this._width = parseInt(props.width) || 20;
+            this._height = parseInt(props.height) || 10;
         } else {
             this._width = text.length;
             this._height = 1;
         }
 
+        // amount of chars can be placed inside input
+        this.length = this._width * this._height;
+
+        // name attribute
         if (props.type === "input" || props.type === "textarea") {
             this.name = props.name;
         }
@@ -545,11 +552,9 @@
             return false;
         }
 
-        if (x >= this.x + this._width) {
-            return false;
-        }
+        return x < this.x + this._width;
 
-        return true;
+
     };
 
     /**
@@ -564,14 +569,11 @@
         x = x || this.x + this._width - 1;
         y = y || this.y + this._height - 1;
 
-        // amount of chars can be placed inside input
-        var elDimension = this._width * this._height;
-
         // If text is bigger than input
-        if (this._text.length >= elDimension) {
+        if (this._text.length >= this.length) {
             this._cursorY = y;
             this._cursorX = x;
-            this.textStart = this._text.length - elDimension;
+            //this.textStart = this._text.length - this.length;
             return this;
         }
 
@@ -633,19 +635,13 @@
         // Inserting text on position
         this._text = [this._text.slice(0, textPos), text, this._text.slice(textPos)].join('');
 
-        // amount of chars can be placed inside input
-        var elDimension = this._width * this._height;
-
         // if the text is bigger than input
-        var offset = textPos + text.length - elDimension;
+        var offset = textPos + text.length - this.length;
 
         // text starts from offfset - all string move left
         if (offset >= 0) {
             this.textStart = offset + 1;
         }
-
-        // visible text
-        this.text = this._text.substr(this.textStart, elDimension);
 
         // position of cursor
         var x = this._cursorX + text.length;
@@ -682,54 +678,93 @@
         var x = this._cursorX;
         var y = this._cursorY;
 
+        var textStart = this.textStart;
+
         switch(side) {
             case "up":
                 if (y === this.y) {
-                    if (this.textStart === 0) {
+                    if (textStart === 0) {
                         break;
                     }
 
-                    this.textStart--;
+                    textStart--;
+                    break;
                 }
                 y--;
                 break;
 
             case "down":
                 if (y === this.y + this._height - 1) {
-                    if (this._text.length - this.textStart <= this._width * this._height) {
+                    if (this._text.length - textStart <= this._width * this._height) {
                         break;
                     }
 
-                    this.textStart++;
+                    textStart++;
+                    break;
                 }
                 y++;
                 break;
 
             case "right":
-                if (x === this.x + this._width - 1) {
-                    if (this._text.length - this.textStart <= this._width * this._height) {
-                        break;
-                    }
 
-                    this.textStart++;
+                // simple moving right
+                if (x < this.x + this._width - 1) {
+                    x++;
+                    break;
                 }
-                x++;
+
+                // end of line
+                var EOL = (x === this.x + this._width - 1);
+
+                // last line
+                var lastLine = (y === this.y + this._height - 1);
+
+                // moving to the begining of next line
+                if (EOL && !lastLine) {
+                    x = this.x;
+                    y++;
+                    break;
+                }
+
+                // moving text
+                if (EOL && lastLine && this._text.length - textStart > this.length) {
+                    textStart++;
+                    break;
+                }
+
                 break;
 
             case "left":
-                if (x === this.x) {
-                    if (this.textStart === 0) {
-                        break;
-                    }
 
-                    this.textStart--;
+                // simple moving left
+                if (x > this.x) {
+                    x--;
+                    break;
                 }
-                x--;
+
+                // up one line
+                if (x === this.x && y > this.y) {
+                    x = this.x + this._width - 1;
+                    y--;
+                    break;
+                }
+
+                // moving text
+                if (x === this.x && textStart > 0) {
+                    textStart--;
+                    break;
+                }
+
                 break;
         }
 
+        if (textStart !== this.textStart) {
+            this.textStart = textStart;
+            this._render();
+        }
+
         // calculate position
-        return this.addText("").select(x,y);
+        return this.select(x,y);
 
     };
 
@@ -750,16 +785,10 @@
         // remove one symbol
         this._text = [this._text.slice(0, textPos - 1), this._text.slice(textPos)].join('');
 
-        // amount of chars can be placed inside input
-        var elDimension = this._width * this._height;
-
         // if text was bigger than element
-        if (this.textStart > 0 && this._text < elDimension) {
+        if (this.textStart > 0 && this._text < this.length) {
             this.textStart--;
         }
-
-        // visible text
-        this.text = this._text.substr(this.textStart, elDimension);
 
         // cursor position
         if (this._cursorX - 1 < this.x) {
@@ -780,10 +809,13 @@
      */
     Element.prototype._render = function() {
 
-        // crop text to width * hight from start
+        // visible text
+        this.text = this._text.substr(this.textStart, this.length);
+
+        // print text to width * hight from start
         var x = 0,
             y = 0;
-        for (var i = 0, length = this._width * this._height; i < length; i++) {
+        for (var i = 0; i < this.length; i++) {
             var char = this.text[i] || " ";
             printthat(char, this.x + x, this.y + y, this.fg, this.bg);
             x++;
