@@ -181,7 +181,11 @@ function parsed_getCursorPosY(y) {
 }
 
 function submit() {
-    alert("SUBMIT");
+    alert("SUBMIT was called");
+}
+
+function register() {
+    alert("register() was called");
 }
 
 function showCanvas() {
@@ -237,13 +241,13 @@ function showHTML() {
     <textarea id="ascii_textarea" style="width:80%;height:80%;margin: 0 auto; display: block;" rows="20" onkeyup="updateAsciiArea();">
 &lt;span data-x="20" data-y="20"&gt;Registration to our community allows you to save your edited levels.&lt;/span&gt;
 &lt;span data-x="20" data-y="22" data-fg="#3caac8"&gt;&lt;input type="button" onclick="register();" value="Do you want to login?"&gt;&lt;/span&gt;
-&lt;form onsubmit="submit();"&gt;
+&lt;form onsubmit="submit();" action="script.php"&gt;
     &lt;span data-x="20" data-y="25"&gt;Username: &lt;input type="text" name="username" value="1234567890123456789"/&gt;&lt;/span&gt;
-    &lt;span data-x="20" data-y="27"&gt;E-Mail address: &lt;input type="text" name="password" value="2"/&gt;
+    &lt;span data-x="20" data-y="27"&gt;E-Mail address: &lt;input type="text" name="email" value="2"/&gt;
     &lt;span data-x="20" data-y="29"&gt;Password: &lt;input type="text" name="password" value="3"/&gt;&lt;span data-x="45"&gt;&lt;/span&gt;
-    &lt;span data-x="20" data-y="31"&gt;Password repetition: &lt;input type="text" name="password" value="4"/&gt;&lt;span data-x="63"&gt;&lt;input type="button" onclick="register();"&gt;&lt;/span&gt;&lt;/span&gt;
+    &lt;span data-x="20" data-y="31"&gt;Password repetition: &lt;input type="text" name="password2" value="4"/&gt;&lt;span data-x="63"&gt;&lt;input type="button" onclick="register();"&gt;&lt;/span&gt;&lt;/span&gt;
 &lt;/form&gt;
-    &lt;textarea cols="40" rows="5" data-x="20" data-y="33"&gt;Textarea text&lt;/textarea&gt;
+    &lt;textarea cols="40" rows="5" data-x="20" data-y="33" name="textarea"&gt;Textarea text&lt;/textarea&gt;
     </textarea>
 </div>
 <!-- Canvas -->

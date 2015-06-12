@@ -236,11 +236,34 @@
             }
         }
 
-        console.log(formData);
+        console.log("data from inputs", formData);
 
-        // do ajax with formData
+        if (this.forms[formId].onsubmit) {
+            console.log("form has attr 'onsubmit' with function " + this.forms[formId].onsubmit);
+            eval(this.forms[formId].onsubmit);
+            return;
+        }
 
-        eval(this.forms[formId])
+        if (this.forms[formId].action) {
+            console.log("send ajax to" + this.forms[formId].action + "with data", formData);
+
+            // AJAX request
+            $.ajax({
+                url: this.forms[formId].action,
+                method: 'post',
+                dataType: 'json',
+                data: formData,
+                success: function (response) {
+                    if (typeof(response.js)!="undefined") eval(response.js);
+                },
+                fail : function(response) {
+                    alert("An error occured");
+                    if (typeof(response.msg)!="undefined") alert(response.msg);
+                }
+            });
+        } else {
+            console.log("form doesnt have onsubmit or action attr");
+        }
     };
 
     /**
@@ -303,7 +326,10 @@
 
         if (type === "form") {
             var form = "form_" + this.formId++;
-            this.forms[form] = $el.attr("onsubmit");
+            this.forms[form] = {
+                onsubmit: $el.attr("onsubmit"),
+                action: $el.attr("action")
+            }
         } else {
             form = parent.form;
         }
@@ -628,7 +654,6 @@
         // if added text bigger than input
         if (x - this.x >= this._width) {
             var lines = Math.ceil((x + 1 - this.x) / this._width);
-            console.log("text heoght",lines);
             if (lines > this._height) {
                 x = this.x + this._width - 1;
                 y = this.y + this._height - 1;
@@ -660,35 +685,51 @@
         switch(side) {
             case "up":
                 if (y === this.y) {
-                    break;
+                    if (this.textStart === 0) {
+                        break;
+                    }
+
+                    this.textStart--;
                 }
                 y--;
                 break;
 
             case "down":
                 if (y === this.y + this._height - 1) {
-                    break;
+                    if (this._text.length - this.textStart <= this._width * this._height) {
+                        break;
+                    }
+
+                    this.textStart++;
                 }
                 y++;
                 break;
 
             case "right":
                 if (x === this.x + this._width - 1) {
-                    break;
+                    if (this._text.length - this.textStart <= this._width * this._height) {
+                        break;
+                    }
+
+                    this.textStart++;
                 }
                 x++;
                 break;
 
             case "left":
                 if (x === this.x) {
-                    break;
+                    if (this.textStart === 0) {
+                        break;
+                    }
+
+                    this.textStart--;
                 }
                 x--;
                 break;
         }
 
         // calculate position
-        return this.select(x,y);
+        return this.addText("").select(x,y);
 
     };
 
