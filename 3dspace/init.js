@@ -15,7 +15,7 @@
     var SCREEN_HEIGHT = window.innerHeight - MARGIN * 2;
     var SCREEN_WIDTH  = window.innerWidth;
 
-    var container, camera, controls, scene,
+    var container, camera, controls, scene, rescueLight,
         renderer, cube, transport, dirLight;
 
     var d, dPlanet = new THREE.Vector3();
@@ -31,7 +31,7 @@
     function init() {
 
         camera = new THREE.PerspectiveCamera( 25, SCREEN_WIDTH / SCREEN_HEIGHT, 50, 1e7 );
-        camera.position.z = 100;
+        camera.position.z = 700;
 
         scene = new THREE.Scene();
         scene.fog = new THREE.FogExp2( 0x000000, 0.00000025 );
@@ -51,7 +51,12 @@
         var light = new THREE.AmbientLight( 0x404040 ); // soft white light
         scene.add( light );
 
+        var sphere = new THREE.SphereGeometry( 0.5, 16, 8 );
 
+        rescueLight = new THREE.PointLight( 0xffa500, 0.4, 15 );
+        rescueLight.position.z = 2;
+        rescueLight.scale.set( 0.1, 0.1, 0.1 );
+        rescueLight.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: 0xffa500 } ) ) );
 
         var collada = new THREE.ColladaLoader();
         collada.options.convertUpAxis = true;
@@ -60,6 +65,7 @@
             console.log(collada);
             transport = collada.scene;
             transport.scale.set( 10, 10, 10 );
+            transport.add( rescueLight );
             scene.add( transport );
         });
 
@@ -91,7 +97,7 @@
 
         for ( i = 0; i < 250; i ++ ) {
 
-            var vertex = new THREE.Vector3();
+            vertex = new THREE.Vector3();
             vertex.x = Math.random() * 2 - 1;
             vertex.y = Math.random() * 2 - 1;
             vertex.z = Math.random() * 2 - 1;
@@ -170,14 +176,24 @@
 
     }
 
+
+    var blinkingTime = 0;
+
     function render() {
 
         // rotate the planet and clouds
 
         var delta = clock.getDelta();
 
+        blinkingTime += delta;
+
+        if (blinkingTime >= 0.5) {
+            rescueLight.visible = !rescueLight.visible;
+            blinkingTime = 0;
+        }
+
         //transport.rotation.y += rotationSpeed * delta;
-        transport.rotation.y += rotationSpeed * 10 * delta;
+        //transport.rotation.y += rotationSpeed * 30 * delta;
 
         // slow down as we approach the surface
 
