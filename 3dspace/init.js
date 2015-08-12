@@ -53,7 +53,7 @@
         var sphere = new THREE.SphereGeometry( 0.5, 16, 8 );
 
         rescueLight = new THREE.PointLight( 0xffa500, 0.4, 20 );
-        rescueLight.position.z = 2;
+        rescueLight.position.z = 1;
         rescueLight.scale.set( 0.1, 0.1, 0.1 );
         rescueLight.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: 0xffa500 } ) ) );
 
@@ -194,7 +194,7 @@
         }
 
         //transport.rotation.y += rotationSpeed * delta;
-        //transport.rotation.y += rotationSpeed * 30 * delta;
+        transport.rotation.y += rotationSpeed * 30 * delta;
 
         // slow down as we approach the surface
 
