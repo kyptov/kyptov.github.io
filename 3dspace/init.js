@@ -61,7 +61,7 @@
         var collada = new THREE.ColladaLoader();
         collada.options.convertUpAxis = true;
 
-        collada.load("cube_internal.dae", function( collada ) {
+        collada.load("cube.dae", function( collada ) {
             console.log(collada);
             transport = collada.scene;
             transport.scale.set( 10, 10, 10 );
