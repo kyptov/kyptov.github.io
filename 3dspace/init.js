@@ -4,8 +4,6 @@
 "use strict";
 (function() {
 
-
-
     if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 
     var radius = 6371;
@@ -16,7 +14,7 @@
     var SCREEN_WIDTH  = window.innerWidth;
 
     var container, camera, controls, scene, rescueLight,
-        renderer, cube, transport, dirLight;
+        renderer, cube, transport, dirLight, fps;
 
     var d, dPlanet = new THREE.Vector3();
 
@@ -24,6 +22,7 @@
 
     document.addEventListener("DOMContentLoaded", function() {
         container = document.getElementById("space");
+        fps = document.getElementById("counter");
         init();
         animate();
     });
@@ -38,15 +37,15 @@
 
         controls = new THREE.FlyControls( camera );
 
-        controls.movementSpeed = 10;
+        controls.movementSpeed = 100;
         controls.domElement = container;
         controls.rollSpeed = Math.PI / 24;
         controls.autoForward = false;
         controls.dragToLook = false;
 
-        dirLight = new THREE.DirectionalLight( 0xffffff );
+        dirLight = new THREE.DirectionalLight( 0x202020 );
         dirLight.position.set( 0, 1, 1 ).normalize();
-        //scene.add( dirLight );
+        scene.add( dirLight );
 
         var light = new THREE.AmbientLight( 0x202020 ); // soft white light
         scene.add( light );
@@ -61,13 +60,14 @@
         var collada = new THREE.ColladaLoader();
         collada.options.convertUpAxis = true;
 
-        collada.load("cube.dae", function( collada ) {
+        collada.load("ark.dae", function( collada ) {
             console.log(collada);
             transport = collada.scene;
             transport.scale.set( 10, 10, 10 );
             transport.add( rescueLight );
             scene.add( transport );
         });
+
 
         // instantiate a loader
         /*var loader = new THREE.JSONLoader();
@@ -188,6 +188,7 @@
         blinkingTime += delta;
 
         if (blinkingTime >= 0.5) {
+            fps.innerText = Math.round(1 / delta);
             rescueLight.visible = !rescueLight.visible;
             blinkingTime = 0;
         }
