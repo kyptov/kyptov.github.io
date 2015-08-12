@@ -53,7 +53,7 @@
 
         var sphere = new THREE.SphereGeometry( 0.5, 16, 8 );
 
-        rescueLight = new THREE.PointLight( 0xffa500, 0.4, 15 );
+        rescueLight = new THREE.PointLight( 0xffa500, 0.4, 20 );
         rescueLight.position.z = 2;
         rescueLight.scale.set( 0.1, 0.1, 0.1 );
         rescueLight.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: 0xffa500 } ) ) );
