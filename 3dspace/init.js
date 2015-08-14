@@ -43,7 +43,7 @@
         controls.autoForward = false;
         controls.dragToLook = false;
 
-        dirLight = new THREE.DirectionalLight( 0x202020 );
+        dirLight = new THREE.DirectionalLight( 0xFFFFFF );
         dirLight.position.set( 0, 1, 1 ).normalize();
         scene.add( dirLight );
 
