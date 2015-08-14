@@ -47,7 +47,7 @@
         dirLight.position.set( 0, 1, 1 ).normalize();
         scene.add( dirLight );
 
-        var light = new THREE.AmbientLight( 0x202020 ); // soft white light
+        var light = new THREE.AmbientLight( 0x404040 ); // soft white light
         scene.add( light );
 
         var sphere = new THREE.SphereGeometry( 0.5, 16, 8 );
