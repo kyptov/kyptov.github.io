@@ -80,27 +80,55 @@ THREE.FlyControls = function ( object, domElement ) {
 
 	this.keyup = function( event ) {
 
-		switch ( event.keyCode ) {
+		switch (event.keyCode) {
 
-			case 16: /* shift */ this.movementSpeedMultiplier = 1; break;
+			case 16: /* shift */
+				this.movementSpeedMultiplier = 1;
+				break;
 
-			case 87: /*W*/ this.moveState.forward = 0; break;
-			case 83: /*S*/ this.moveState.back = 0; break;
+			case 87: /*W*/
+				this.moveState.forward = 0;
+				this.moveState.yawLeft = 0;
+				this.moveState.pitchDown = 0;
+				break;
+			case 83: /*S*/
+				this.moveState.back = 0;
+				break;
 
-			case 65: /*A*/ this.moveState.left = 0; break;
-			case 68: /*D*/ this.moveState.right = 0; break;
+			case 65: /*A*/
+				this.moveState.left = 0;
+				break;
+			case 68: /*D*/
+				this.moveState.right = 0;
+				break;
 
-			case 82: /*R*/ this.moveState.up = 0; break;
-			case 70: /*F*/ this.moveState.down = 0; break;
+			case 82: /*R*/
+				this.moveState.up = 0;
+				break;
+			case 70: /*F*/
+				this.moveState.down = 0;
+				break;
 
-			case 38: /*up*/ this.moveState.pitchUp = 0; break;
-			case 40: /*down*/ this.moveState.pitchDown = 0; break;
+			case 38: /*up*/
+				this.moveState.pitchUp = 0;
+				break;
+			case 40: /*down*/
+				this.moveState.pitchDown = 0;
+				break;
 
-			case 37: /*left*/ this.moveState.yawLeft = 0; break;
-			case 39: /*right*/ this.moveState.yawRight = 0; break;
+			case 37: /*left*/
+				this.moveState.yawLeft = 0;
+				break;
+			case 39: /*right*/
+				this.moveState.yawRight = 0;
+				break;
 
-			case 81: /*Q*/ this.moveState.rollLeft = 0; break;
-			case 69: /*E*/ this.moveState.rollRight = 0; break;
+			case 81: /*Q*/
+				this.moveState.rollLeft = 0;
+				break;
+			case 69: /*E*/
+				this.moveState.rollRight = 0;
+				break;
 
 		}
 
@@ -128,7 +156,7 @@ THREE.FlyControls = function ( object, domElement ) {
 
 			switch ( event.button ) {
 
-				case 0: this.moveState.forward = 1; break;
+				//case 0: this.moveState.forward = 1; break;
 				//case 2: this.moveState.back = 1; break;
 
 			}
