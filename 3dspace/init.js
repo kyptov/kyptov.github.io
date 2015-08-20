@@ -213,7 +213,7 @@
 
         }
 
-        renderer = new THREE.WebGLRenderer({canvas: container});
+        renderer = new THREE.WebGLRenderer({canvas: container, antialias: false, alpha: true });
         renderer.setPixelRatio( window["devicePixelRatio"] );
         renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
         renderer.sortObjects = false;
@@ -255,7 +255,7 @@
 
         stars.rotation.y += 0.0001;
 
-        if (!contact && camera.position.length() <= 200) {
+        if (!contact && camera.position.length() <= 300) {
             contact = true;
             alert("contact");
         }
