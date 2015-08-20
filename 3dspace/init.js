@@ -31,8 +31,6 @@
         "meshes/asteroid.9"
     ];
 
-    var stone = THREE.ImageUtils.loadTexture( "textures/stone.jpg" );
-
     var asteroidsObjs = [];
 
     var d, dPlanet = new THREE.Vector3();
@@ -258,6 +256,7 @@
         stars.rotation.y += 0.0001;
 
         if (!contact && camera.position.length() <= 200) {
+            contact = true;
             alert("contact");
         }
 
