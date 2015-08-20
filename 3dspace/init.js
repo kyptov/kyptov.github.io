@@ -93,6 +93,7 @@
 
         camera = new THREE.PerspectiveCamera( 25, SCREEN_WIDTH / SCREEN_HEIGHT, 50, 1e7 );
         camera.position.z = 20000;
+        camera.position.y = 300;
 
         scene = new THREE.Scene();
         scene.fog = new THREE.FogExp2( 0x000000, 0.0000025 );
