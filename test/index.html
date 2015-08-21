@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="jquery.js"></script>
+    <style>
+        div {
+            font-size: 25px;
+            border: 1px black solid;
+        }
+    </style>
+</head>
+<body>
+<div onmouseover="hover();" onmouseout="out();">example</div>
+<script>
+    function hover() {
+        $("div").css("color", "yellow");
+    }
+
+    function out() {
+        $("div").css("color", "black");
+    }
+
+    $("div").click(function(e) {
+        $("div").css("color", "blue");
+    });
+</script>
+</body>
+</html>

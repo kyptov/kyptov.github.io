@@ -6,8 +6,6 @@
 
     if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 
-    var radius = 6371;
-    var rotationSpeed = 0.02;
     var intensity = 6;
 
     var MARGIN = 0;
@@ -33,8 +31,6 @@
 
     var asteroidsObjs = [];
 
-    var d, dPlanet = new THREE.Vector3();
-
     var clock = new THREE.Clock();
 
     document.addEventListener("DOMContentLoaded", function() {
@@ -44,50 +40,7 @@
         animate();
     });
 
-    function loadModel(name) {
-        var loader = new THREE.OBJLoader();
-        loader.load(name, function(object) {
-            object.traverse(function(child) {
-                if (child instanceof THREE.Mesh) {
-                    child.material = new THREE.MeshPhongMaterial({color: 0xcccccc});
-                    child.geometry.computeFaceNormals();
-                    child.geometry.computeVertexNormals();
-                    child.geometry.computeBoundingBox();
-                }
-            });
 
-            object.position.z = (Math.random() - 2) * 100 + 100;
-            object.position.x = (Math.random() - 2) * 100 + 100;
-
-            asteroidsObjs.push(object);
-
-            scene.add( object );
-
-            if (asteroidsObjs.length === 8) {
-                addAsters();
-            }
-        });
-    }
-
-    function addAsters() {
-        var z = {
-            max: 100,
-            min: -100
-        };
-        var x = {
-            max: 100,
-            min: -100
-        };
-        for (var i = 0; i < 100; i++) {
-            var aster = asteroidsObjs[i % 8].clone();
-            asteroidsObjs.push(aster);
-            aster.position.z = Math.random() * (z.max - z.min) + z.min;
-            aster.position.x = Math.random() * (x.max - x.min) + x.min;
-            aster.position.y = -20;
-            aster.speed = (2 * Math.random() - 1) * 0.01;
-            scene.add(aster);
-        }
-    }
 
     function init() {
 
@@ -184,7 +137,6 @@
 
         }
 
-        var star;
         stars = new THREE.Object3D();
         scene.add( stars );
         var starsMaterials = [
@@ -198,7 +150,7 @@
 
         for ( i = 5; i < 300; i ++ ) {
 
-            star = new THREE.PointCloud( starsGeometry[ i % 2 ], starsMaterials[ i % 6 ] );
+            var star = new THREE.PointCloud( starsGeometry[ i % 2 ], starsMaterials[ i % 6 ] );
 
             star.rotation.x = Math.random() * 6;
             star.rotation.y = Math.random() * 6;
@@ -261,7 +213,7 @@
             alert("contact");
         }
 
-        controls.movementSpeed = (Math.max(camera.position.length(), 150) - 150) * 0.1;
+        controls.movementSpeed = Math.max(camera.position.length() * 0.1, 10);
 
         controls.update( delta );
 
@@ -296,20 +248,10 @@
             asteroidsObjs[i].rotation.z += asteroidsObjs[i].speed;
         }
 
-        if (typeof transport === "undefined") {
-            return;
+        if (transport) {
+            transport.rotation.y += 0.001;
         }
 
-        transport.rotation.y += 0.001;
-
-
-        // slow down as we approach the surface
-
-        /*dPlanet = camera.position.length();
-
-        d = ( dPlanet - radius * 1.01 );
-
-        controls.movementSpeed = 0.33 * d;*/
 
 
     }
