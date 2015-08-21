@@ -22,41 +22,44 @@
 <div class="container" onclick = "void(0)"></div>
 <div class="result"></div>
 <script>
-    function hover() {
-        $("div").css("color", "yellow");
-    }
+    $(function () {
+        function hover() {
+            $("div").css("color", "yellow");
+        }
 
-    function out() {
-        $("div").css("color", "black");
-    }
+        function out() {
+            $("div").css("color", "black");
+        }
 
-    $("div").click(function(e) {
-        $("div").css("color", "blue");
-    });
+        $("div").click(function(e) {
+            $("div").css("color", "blue");
+        });
 
-    Array.prototype.last = function() {
-        return this[this.length-1];
-    }
+        Array.prototype.last = function() {
+            return this[this.length-1];
+        }
 
-    function getAllEvents(element) {
-        var result = [];
-        for (var key in element) {
-            if (key.indexOf('on') === 0) {
-                result.push(key.slice(2));
+        function getAllEvents(element) {
+            var result = [];
+            for (var key in element) {
+                if (key.indexOf('on') === 0) {
+                    result.push(key.slice(2));
+                }
             }
+            return result.join(' ');
         }
-        return result.join(' ');
-    }
-    var elem = $('.container');
-    var events = [];
-    elem.on(getAllEvents(elem.get(0)), function(e) {
-        var event = e.type;
-        if (events.last() != event) {
-            events.push(event);
-        }
+        var elem = $('.container');
+        var events = [];
+        elem.on(getAllEvents(elem.get(0)), function(e) {
+            var event = e.type;
+            if (events.last() != event) {
+                events.push(event);
+            }
 
-        $('.result').html(events.join(', '));
+            $('.result').html(events.join(', '));
+        });
     });
+
 </script>
 </body>
 </html>
