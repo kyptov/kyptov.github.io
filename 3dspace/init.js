@@ -105,7 +105,7 @@
         //asteroids
 
         for (i = 0; i < asteroidsList.length; i++) {
-            loadModel(asteroidsList[i]);
+            //loadModel(asteroidsList[i]);
         }
 
 
