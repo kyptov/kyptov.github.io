@@ -156,7 +156,7 @@ THREE.FlyControls = function ( object, domElement ) {
 
 			switch ( event.button ) {
 
-				//case 0: this.moveState.forward = 1; break;
+				case 0: this.moveState.forward = 1; break;
 				//case 2: this.moveState.back = 1; break;
 
 			}
