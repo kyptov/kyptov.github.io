@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+	<script src="js/jquery.js"></script>
+	<script src="js/pixi.js"></script>
+</head>
+<body>
+<script>
+	var stage = new PIXI.Container();
+	var renderer = new PIXI.CanvasRenderer(200 * 40, 200, {transparent: true, autoResize: true});
+
+	$("body").append(renderer.view);
+
+	PIXI.loader.add("assets/58.json");
+
+	PIXI.loader.once("complete", createSprite);
+
+	PIXI.loader.load();
+
+	function createSprite() {
+		for (var i = 1; i <= 40; i++) {
+			var frameId = (i < 10 ? "0" + i : "" + i) + ".png";
+
+			var sprite = new PIXI.Sprite(PIXI.Texture.fromFrame(frameId));
+
+			sprite.position.set((i-1) * 200, 0);
+
+			stage.addChild(sprite);
+		}
+	}
+
+	requestAnimationFrame(animate);
+
+	function animate () {
+		requestAnimationFrame(animate);
+		renderer.render(stage);
+	}
+</script>
+</body>
+</html>

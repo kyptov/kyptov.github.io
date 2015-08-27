@@ -154,12 +154,14 @@ THREE.FlyControls = function ( object, domElement ) {
 
 		} else {
 
-			switch ( event.button ) {
+			this.moveState.forward = 1;
+
+			/*switch ( event.button ) {
 
 				case 0: this.moveState.forward = 1; break;
 				//case 2: this.moveState.back = 1; break;
 
-			}
+			}*/
 
 			this.updateMovementVector();
 
@@ -293,7 +295,11 @@ THREE.FlyControls = function ( object, domElement ) {
 	this.domElement.addEventListener( 'contextmenu', function ( event ) { event.preventDefault(); }, false );
 
 	this.domElement.addEventListener( 'mousemove', bind( this, this.mousemove ), false );
-	this.domElement.addEventListener( 'mousedown', bind( this, this.mousedown ), false );
+	this.domElement.addEventListener( 'mousedown touchstart', bind( this, this.mousedown ), false );
+	this.domElement.addEventListener( 'mouseup',   bind( this, this.mouseup ), false );
+
+	this.domElement.addEventListener( 'mousemove', bind( this, this.mousemove ), false );
+	this.domElement.addEventListener( 'touhstart', bind( this, this.mousedown ), false );
 	this.domElement.addEventListener( 'mouseup',   bind( this, this.mouseup ), false );
 
 	window.addEventListener( 'keydown', bind( this, this.keydown ), false );

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Multy Canvas</title>
+	<script src="js/jquery.js"></script>
+	<script src="js/pixi.js"></script>
+	<script src="js/Build.js"></script>
+</head>
+<body>
+
+<script>
+	var $parent = $("<div style=\"position: absolute;left: 100px;\"></div>").css("top", 0).appendTo("body");
+
+	(new Build(58)).setParent($parent.first()).load().setCallback(function() {
+		for (var i = 1; i < 8; i++) {
+			$parent = $("<div style=\"position: absolute;left: 100px;\"></div>").css("top", i * 201).appendTo("body");
+
+			(new Build(58)).setParent($parent.first()).load();
+		}
+	});
+</script>
+</body>
+</html>

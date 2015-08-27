@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>CSS Animation</title>
+	<style>
+		.anim_build {
+			width: 200px;
+			height: 200px;
+
+			background-image: url("assets/58.png");
+			animation: play 1.6s steps(40) infinite;
+		}
+
+		@keyframes play {
+			from { background-position:    0; }
+			to { background-position: -8000px; }
+		}
+	</style>
+</head>
+<body>
+<div data-id="58" class="anim_build"></div>
+</body>
+</html>
