@@ -70,6 +70,14 @@
             border-radius: 100%;
             background-color: darkblue;
         }
+        .noselect {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
     </style>
     <script src="jquery.js"></script>
     <script src="threeR71.js"></script>
@@ -81,7 +89,7 @@
 </head>
 <body>
 <canvas id="space"></canvas>
-<div id="controls">
+<div id="controls" class="noselect">
     <div class="round"></div>
 </div>
 <div id="fps">
