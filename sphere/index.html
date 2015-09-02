@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Space</title>
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<script src="threeR71.js"></script>
+	<script src="Detector.js"></script>
+</head>
+<body>
+<canvas id="sphere"></canvas>
+<script>
+	if (!Detector.webgl) Detector.addGetWebGLMessage();
+
+	var camera, scene, renderer, container, mesh;
+
+	var SCREEN_HEIGHT = window.innerHeight;
+	var SCREEN_WIDTH = window.innerWidth;
+
+	document.addEventListener("DOMContentLoaded", function () {
+		container = document.getElementById("sphere");
+		init();
+		animate();
+	});
+
+	function init() {
+
+		camera = new THREE.PerspectiveCamera(25, SCREEN_WIDTH / SCREEN_HEIGHT, 50, 1e7);
+		camera.position.z = 1000;
+
+		scene = new THREE.Scene();
+		scene.fog = new THREE.FogExp2(0x0033CC, 0.0010);
+
+		renderer = new THREE.WebGLRenderer({canvas: container});
+		renderer.setClearColor(0x0033CC);
+		renderer.setPixelRatio(window["devicePixelRatio"]);
+		renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+
+		var light = new THREE.AmbientLight(0xFFFFFF);
+		scene.add(light);
+
+		var material = new THREE.MeshBasicMaterial({
+			color: 0xffffff,
+			wireframe: true,
+			side: THREE.DoubleSide
+		});
+
+		var material2 = new THREE.ShaderMaterial();
+		var geometry = new THREE.SphereGeometry(700, 100, 50);
+
+		mesh = new THREE.Mesh(geometry, material);
+		mesh.position.y = -750;
+		mesh.rotation.z = Math.PI / 2 - 0.7;
+
+		scene.add(mesh);
+
+	}
+
+	function render() {
+		mesh.rotation.x -= 0.001;
+		renderer.render(scene, camera);
+	}
+
+	function animate() {
+		requestAnimationFrame(animate);
+		render();
+	}
+</script>
+</body>
+</html>
