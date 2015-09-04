@@ -84,9 +84,9 @@
             console.log(collada);
             transport = collada.scene;
             transport.scale.set( 10, 10, 10 );
-            transport.add( rescueLight1 );
-            transport.add( rescueLight2 );
-            transport.add( rescueLight3 );
+            //transport.add( rescueLight1 );
+            //transport.add( rescueLight2 );
+            //transport.add( rescueLight3 );
             scene.add( transport );
         });
 
