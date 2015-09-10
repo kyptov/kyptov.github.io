@@ -133,12 +133,13 @@
         var collada = new THREE.ColladaLoader();
         collada.options.convertUpAxis = true;
 
-        collada.load("ark.dae", function (collada) {
+        collada.load("231.dae", function (collada) {
             console.log(collada);
             transport = collada.scene;
             ///transport.scale.set(10, 10, 10);
             transport.scale.x = transport.scale.y = transport.scale.z = 10;
             transport.rotation.y = Math.PI / 1.5;
+            transport.rotation.x = 1;
 
             transport.traverse(function (child) {
 
@@ -209,7 +210,7 @@
 
         var delta = clock.getDelta();
 
-        THREE.AnimationHandler.update(delta);
+        THREE.AnimationHandler.update(delta / 10);
 
         if (!contact && camera.position.length() <= 300) {
             contact = true;
