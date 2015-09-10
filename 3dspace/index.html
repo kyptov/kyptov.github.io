@@ -48,34 +48,13 @@
             right: 30px;
             top: 50px;
             font-size: 30px;
-        }
-        #controls {
-            position: fixed;
-            bottom: 50px;
-            right: 50px;
-            width: 150px;
-            height: 150px;
-            border: 1px dotted white;
-            border-radius: 100%;
-        }
-        .round {
-            width: 50px;
-            height: 50px;
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            margin: auto;
-            border-radius: 100%;
-            background-color: darkblue;
-        }
-        .noselect {
-            -webkit-touch-callout: none;
             -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
             user-select: none;
+        }
+        div {
+            text-align: left;
+            font-size: 12px;
+            font-family: Tahoma, sans-serif;
         }
 
     </style>
@@ -84,14 +63,10 @@
     <script src="FlyControls.js"></script>
     <script src="ColladaLoader.js"></script>
     <script src="Detector.js"></script>
-    <script src="OBJLoader.js"></script>
     <script src="init.js"></script>
 </head>
 <body>
 <canvas id="space"></canvas>
-<div id="controls" class="noselect">
-    <div class="round"></div>
-</div>
 <div id="fps">
     <span id="counter">--</span>fps
 </div>
