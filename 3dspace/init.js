@@ -245,7 +245,7 @@
         sphere.rotation.y += 0.001;
         transport.rotation.y += 0.001;
 
-        THREE.AnimationHandler.update(clock.getDelta() / 25);
+        THREE.AnimationHandler.update(clock.getDelta() / 20);
 
         renderer.render(scene, camera);
 
