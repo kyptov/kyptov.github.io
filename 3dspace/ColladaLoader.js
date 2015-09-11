@@ -158,19 +158,10 @@ THREE.ColladaLoader = function () {
         skins = [];
 
         visualScene = parseScene();
-        console.log(visualScene);
         scene = new THREE.Group();
 
         for (var i = 0; i < visualScene.nodes.length; i++) {
-
-            if (i == 2) {
-                continue;
-            }
-
-            console.log(i);
             scene.add(createSceneGraph(visualScene.nodes[i]));
-
-
         }
 
         // unit conversion
@@ -710,8 +701,6 @@ THREE.ColladaLoader = function () {
         var bonelist = flattenSkeleton(skeleton);
         var joints = skinController.skin.joints;
 
-        console.log(bonelist.length, joints);
-
         //sort that list so that the order reflects the order in the joint list
         var sortedbones = [];
         for (var i = 0; i < joints.length; i++) {
@@ -729,8 +718,6 @@ THREE.ColladaLoader = function () {
             }
 
         }
-
-        console.log(sortedbones);
 
         //hook up the parents by index instead of name
         for (var i = 0; i < sortedbones.length; i++) {
