@@ -90,7 +90,7 @@ function addControl() {
 function init() {
 
     camera = new THREE.PerspectiveCamera(25, SCREEN_WIDTH / SCREEN_HEIGHT, 50, 1e7);
-    camera.position.z = 100000;
+    camera.position.z = 50000;
     camera.position.y = 0;
 
     scene = new THREE.Scene();
@@ -167,6 +167,62 @@ function init() {
 
     scene.add(sphere);
 
+    // stars
+
+    var i, r = 600, starsGeometry = [new THREE.Geometry(), new THREE.Geometry()];
+
+    for (i = 0; i < 250; i++) {
+
+        var vertex = new THREE.Vector3();
+        vertex.x = Math.random() * 2 - 1;
+        vertex.y = Math.random() * 2 - 1;
+        vertex.z = Math.random();
+        vertex.multiplyScalar(r);
+
+        starsGeometry[0].vertices.push(vertex);
+
+    }
+
+    for (i = 0; i < 1500; i++) {
+
+        vertex = new THREE.Vector3();
+        vertex.x = Math.random() * 2 - 1;
+        vertex.y = Math.random() * 2 - 1;
+        vertex.z = Math.random();
+        vertex.multiplyScalar(r);
+
+        starsGeometry[1].vertices.push(vertex);
+
+    }
+
+    var stars;
+    var starsMaterials = [
+        new THREE.PointCloudMaterial({color: 0x555555, size: 2, sizeAttenuation: false}),
+        new THREE.PointCloudMaterial({color: 0x555555, size: 1, sizeAttenuation: false}),
+        new THREE.PointCloudMaterial({color: 0x333333, size: 2, sizeAttenuation: false}),
+        new THREE.PointCloudMaterial({color: 0x3a3a3a, size: 1, sizeAttenuation: false}),
+        new THREE.PointCloudMaterial({color: 0x1a1a1a, size: 2, sizeAttenuation: false}),
+        new THREE.PointCloudMaterial({color: 0x1a1a1a, size: 1, sizeAttenuation: false})
+    ];
+
+    for (i = 10; i < 300; i++) {
+
+        stars = new THREE.PointCloud(starsGeometry[i % 2], starsMaterials[i % 6]);
+
+        stars.rotation.x = Math.random() * 6;
+        stars.rotation.y = Math.random() * 6;
+        stars.rotation.z = Math.random() * 6;
+
+        var s = i / 2;
+        stars.scale.set(s, s, s);
+
+        stars.matrixAutoUpdate = false;
+        stars.updateMatrix();
+
+        scene.add(stars);
+
+    }
+
     renderer = new THREE.WebGLRenderer({canvas: container, antialias: false, alpha: false});
     renderer.setClearColor(0x000000, 0);
     renderer.setPixelRatio(window["devicePixelRatio"]);
@@ -226,6 +282,8 @@ function render() {
 
     if (!contact && length <= 1000) {
         contact = true;
+        var center = new THREE.Vector3(0, 0, 0);
+        camera.lookAt(center);
         render2();
         return;
     }
