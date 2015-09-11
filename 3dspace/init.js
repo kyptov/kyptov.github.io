@@ -90,10 +90,11 @@ function addControl() {
 function init() {
 
     camera = new THREE.PerspectiveCamera(25, SCREEN_WIDTH / SCREEN_HEIGHT, 50, 1e7);
-    camera.position.z = 20000;
+    camera.position.z = 100000;
     camera.position.y = 0;
 
     scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x03020F, 0.00007);
 
     addControl();
     controls = new THREE.FlyControls(camera);
@@ -130,7 +131,7 @@ function init() {
     collada.load("231.dae", function (collada) {
         zerg = collada.scene;
         zerg.scale.x = zerg.scale.y = zerg.scale.z = 8;
-        zerg.position.z = camera.position.z - 2000;
+        zerg.position.z = camera.position.z - 1000;
         zerg.rotation.y = Math.PI;
         zerg.rotation.x = 1;
 
@@ -156,7 +157,8 @@ function init() {
 
 
     var material = new THREE.MeshBasicMaterial({
-        map: texture
+        map: texture,
+        fog: false
     });
 
     sphere = new THREE.Mesh(geometry, material);
@@ -320,7 +322,7 @@ function movingTo(delta) {
     }
 
     x = 300 * scale * Math.cos(clock.elapsedTime / 4);
-    y = 400 * scale * Math.sin(clock.elapsedTime / 2) / 2;
+    y = 300 * scale * Math.sin(clock.elapsedTime / 2) / 2;
 
     pointTo.set(x, y, z);
     zerg.lookAt(pointTo);
