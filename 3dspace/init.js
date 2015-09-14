@@ -89,18 +89,18 @@ function addControl() {
 
 function init() {
 
-    camera = new THREE.PerspectiveCamera(25, SCREEN_WIDTH / SCREEN_HEIGHT, 50, 1e7);
-    camera.position.z = 50000;
-    camera.position.y = 0;
+    camera = new THREE.PerspectiveCamera(25, SCREEN_WIDTH / SCREEN_HEIGHT, 1, 1e7);
+    camera.position.z = 10000;
+    camera.position.x = 0;
 
     scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x03020F, 0.00007);
+    scene.fog = new THREE.FogExp2(0x03020F, 0.0005);
 
     addControl();
     controls = new THREE.FlyControls(camera);
     controls.init();
 
-    controls.movementSpeed = 10000;
+    controls.movementSpeed = 2000;
     controls.domElement = container;
     controls.rollSpeed = Math.PI / 24;
     controls.autoForward = false;
@@ -121,8 +121,8 @@ function init() {
 
     collada.load("ark.dae", function (collada) {
         transport = collada.scene;
-        transport.scale.x = transport.scale.y = transport.scale.z = 40;
-        transport.rotation.y = Math.PI / 2;
+        transport.scale.x = transport.scale.y = transport.scale.z = 5;
+        //transport.rotation.y = Math.PI / 2;
         transport.updateMatrix();
         group.add(transport);
         start();
@@ -130,14 +130,15 @@ function init() {
 
     collada.load("231.dae", function (collada) {
         zerg = collada.scene;
-        zerg.scale.x = zerg.scale.y = zerg.scale.z = 8;
-        zerg.position.z = camera.position.z - 1000;
-        zerg.rotation.y = Math.PI;
-        zerg.rotation.x = 1;
+        zerg.scale.x = zerg.scale.y = zerg.scale.z = 1;
+        zerg.position.z = camera.position.z - 15;
+        zerg.rotation.x = Math.PI / 2;
+        zerg.rotation.y = Math.PI / 2;
 
         zerg.traverse(function (child) {
             if (child instanceof THREE.SkinnedMesh) {
                 var animation = new THREE.Animation(child, child.geometry.animation);
+                animation.timeScale = 0.05;
                 animation.play();
             }
         });
@@ -197,12 +198,12 @@ function init() {
 
     var stars;
     var starsMaterials = [
-        new THREE.PointCloudMaterial({color: 0x555555, size: 2, sizeAttenuation: false}),
-        new THREE.PointCloudMaterial({color: 0x555555, size: 1, sizeAttenuation: false}),
-        new THREE.PointCloudMaterial({color: 0x333333, size: 2, sizeAttenuation: false}),
-        new THREE.PointCloudMaterial({color: 0x3a3a3a, size: 1, sizeAttenuation: false}),
-        new THREE.PointCloudMaterial({color: 0x1a1a1a, size: 2, sizeAttenuation: false}),
-        new THREE.PointCloudMaterial({color: 0x1a1a1a, size: 1, sizeAttenuation: false})
+        new THREE.PointCloudMaterial({color: 0x555555, size: 2, sizeAttenuation: false, fog: false}),
+        new THREE.PointCloudMaterial({color: 0x555555, size: 1, sizeAttenuation: false, fog: false}),
+        new THREE.PointCloudMaterial({color: 0x333333, size: 2, sizeAttenuation: false, fog: false}),
+        new THREE.PointCloudMaterial({color: 0x3a3a3a, size: 1, sizeAttenuation: false, fog: false}),
+        new THREE.PointCloudMaterial({color: 0x1a1a1a, size: 2, sizeAttenuation: false, fog: false}),
+        new THREE.PointCloudMaterial({color: 0x1a1a1a, size: 1, sizeAttenuation: false, fog: false})
     ];
 
     for (i = 10; i < 300; i++) {
@@ -278,9 +279,9 @@ function render() {
 
     var length = camera.position.length();
 
-    THREE.AnimationHandler.update(delta / 20);
+    THREE.AnimationHandler.update(delta);
 
-    if (!contact && length <= 1000) {
+    if (!contact && length <= 200) {
         contact = true;
         var center = new THREE.Vector3(0, 0, 0);
         camera.lookAt(center);
@@ -322,7 +323,7 @@ var render2 = function () {
 
     movingTo(length - camera.position.length());
 
-    THREE.AnimationHandler.update(clock.getDelta() / 20);
+    THREE.AnimationHandler.update(clock.getDelta());
 
     renderer.render(scene, camera);
 
@@ -357,33 +358,40 @@ var render2 = function () {
 
 
 var pointTo = new THREE.Vector3();
-var axisTo = new THREE.Vector3();
 
-var x, y, z, distance, speed, finish = false;
+var x, y, z, distance, finish = false;
 
-function movingTo(delta) {
+var minD = 100;
+var maxD = 300;
+var speed = 0.3;
+var d = 100;
 
-    delta = delta || 0;
+function movingTo() {
 
     var scale = 2 / (3 - Math.cos(clock.elapsedTime));
 
     if (!finish && zerg.position.z <= 0) {
         finish = true;
+        z = 0;
     }
 
     if (finish) {
-        z += Math.sin(clock.elapsedTime / 5);
+        z += Math.sin(clock.elapsedTime / 5) / 15;
     } else {
-        distance = camera.position.length() - zerg.position.length();
-        speed = (delta + 1) * 2000 / distance;
-        z = zerg.position.z - speed;
+        if (d > maxD || d < minD) {
+            speed *= -1;
+        }
+        d += speed;
+        z = camera.position.length() - d;
+        if (z >= zerg.position.z) {
+            z = zerg.position.z;
+        }
     }
 
-    x = 300 * scale * Math.cos(clock.elapsedTime / 4);
-    y = 300 * scale * Math.sin(clock.elapsedTime / 2) / 2;
+    x = 50 * scale * Math.cos(clock.elapsedTime / 4) + 22;
+    y = 50 * scale * Math.sin(clock.elapsedTime / 2) / 2;
 
     pointTo.set(x, y, z);
     zerg.lookAt(pointTo);
-    //axisTo.subVectors(zerg.position, pointTo).normalize();
     zerg.position.copy(pointTo);
 }
