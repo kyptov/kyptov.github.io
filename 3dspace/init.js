@@ -96,7 +96,7 @@ function init() {
     scene = new THREE.Scene();
     scene.fog = new THREE.FogExp2(0x03020F, 0.0005);
 
-    addControl();
+    //addControl();
     controls = new THREE.FlyControls(camera);
     controls.init();
 
@@ -106,8 +106,8 @@ function init() {
     controls.autoForward = false;
     controls.dragToLook = false;
 
-    dirLight = new THREE.DirectionalLight(0xffffff, 0.5);
-    dirLight.position.set(1, 1, 1).normalize();
+    dirLight = new THREE.DirectionalLight(0xffffff, 2);
+    dirLight.position.set(1, 1, 2).normalize();
     scene.add(dirLight);
 
     var light = new THREE.AmbientLight(0x808080); // soft white light
@@ -116,7 +116,7 @@ function init() {
     group = new THREE.Group();
     scene.add(group);
 
-    var collada = new THREE.ColladaLoader();
+    /*var collada = new THREE.ColladaLoader();
     collada.options.convertUpAxis = true;
 
     collada.load("ark.dae", function (collada) {
@@ -128,16 +128,25 @@ function init() {
         start();
     });
 
-    collada.load("231.dae", function (collada) {
+    var models = {
+        0: "231.dae",
+        1: "231_shade1.dae",
+        2: "231_shade2.dae",
+        3: "231_shade1(1).dae"
+    };
+
+    collada.load(models[1], function (collada) {
         zerg = collada.scene;
-        zerg.scale.x = zerg.scale.y = zerg.scale.z = 1;
+        console.log(collada);
+        zerg.scale.x = zerg.scale.y = zerg.scale.z = 0.5;
         zerg.position.z = camera.position.z - 15;
         zerg.rotation.x = Math.PI / 2;
         zerg.rotation.y = Math.PI / 2;
 
         zerg.traverse(function (child) {
             if (child instanceof THREE.SkinnedMesh) {
-                var animation = new THREE.Animation(child, child.geometry.animation);
+                var animation = new THREE.Animation(child, "name");
+                console.log(animation);
                 animation.timeScale = 0.05;
                 animation.play();
             }
@@ -146,7 +155,31 @@ function init() {
         window.zerg = zerg;
         scene.add(zerg);
         start();
+    });*/
+
+    var texture = new THREE.ImageUtils.loadTexture("zerg.png");
+
+    var zergmaterial = new THREE.MeshPhongMaterial({
+        aoMap : texture,
+        map : texture
     });
+
+
+
+    var loader = new THREE.JSONLoader();
+    loader.load("231.json", function (geometry, materials) {
+        var material = new THREE.MeshFaceMaterial(materials);
+        console.log(material);
+        console.log(materials);
+        zerg = new THREE.SkinnedMesh(geometry,  material);
+        zerg.scale.x = zerg.scale.y = zerg.scale.z = 0.5;
+        zerg.position.z = camera.position.z - 15;
+        zerg.rotation.x = Math.PI / 2;
+        zerg.rotation.y = Math.PI / 2;
+        scene.add(zerg);
+        start();
+    });
+
 
     var geometry = new THREE.SphereGeometry(25000, 32, 32);
     geometry.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));
@@ -170,7 +203,7 @@ function init() {
 
     // stars
 
-    var i, r = 600, starsGeometry = [new THREE.Geometry(), new THREE.Geometry()];
+   /* var i, r = 600, starsGeometry = [new THREE.Geometry(), new THREE.Geometry()];
 
     for (i = 0; i < 250; i++) {
 
@@ -198,17 +231,17 @@ function init() {
 
     var stars;
     var starsMaterials = [
-        new THREE.PointCloudMaterial({color: 0x555555, size: 2, sizeAttenuation: false, fog: false}),
-        new THREE.PointCloudMaterial({color: 0x555555, size: 1, sizeAttenuation: false, fog: false}),
-        new THREE.PointCloudMaterial({color: 0x333333, size: 2, sizeAttenuation: false, fog: false}),
-        new THREE.PointCloudMaterial({color: 0x3a3a3a, size: 1, sizeAttenuation: false, fog: false}),
-        new THREE.PointCloudMaterial({color: 0x1a1a1a, size: 2, sizeAttenuation: false, fog: false}),
-        new THREE.PointCloudMaterial({color: 0x1a1a1a, size: 1, sizeAttenuation: false, fog: false})
+        new THREE.Points({color: 0x555555, size: 2, sizeAttenuation: false, fog: false}),
+        new THREE.Points({color: 0x555555, size: 1, sizeAttenuation: false, fog: false}),
+        new THREE.Points({color: 0x333333, size: 2, sizeAttenuation: false, fog: false}),
+        new THREE.Points({color: 0x3a3a3a, size: 1, sizeAttenuation: false, fog: false}),
+        new THREE.Points({color: 0x1a1a1a, size: 2, sizeAttenuation: false, fog: false}),
+        new THREE.Points({color: 0x1a1a1a, size: 1, sizeAttenuation: false, fog: false})
     ];
 
     for (i = 10; i < 300; i++) {
 
-        stars = new THREE.PointCloud(starsGeometry[i % 2], starsMaterials[i % 6]);
+        stars = new THREE.Points(starsGeometry[i % 2], starsMaterials[i % 6]);
 
         stars.rotation.x = Math.random() * 6;
         stars.rotation.y = Math.random() * 6;
@@ -222,13 +255,14 @@ function init() {
 
         scene.add(stars);
 
-    }
+    }*/
 
     renderer = new THREE.WebGLRenderer({canvas: container, antialias: false, alpha: false});
     renderer.setClearColor(0x000000, 0);
     renderer.setPixelRatio(window["devicePixelRatio"]);
     renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
     renderer.sortObjects = false;
+    start();
 
     window.addEventListener('resize', onWindowResize, false);
 
@@ -292,7 +326,7 @@ function render() {
     controls.update(delta);
 
     if (zerg) {
-        movingTo(length - camera.position.length());
+        //movingTo(length - camera.position.length());
     }
 
     var x = camera.position.x;
