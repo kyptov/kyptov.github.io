@@ -106,7 +106,7 @@ function init() {
     controls.autoForward = false;
     controls.dragToLook = false;
 
-    dirLight = new THREE.DirectionalLight(0xffffff, 2);
+    dirLight = new THREE.DirectionalLight(0xffffff, 0.5);
     dirLight.position.set(1, 1, 2).normalize();
     scene.add(dirLight);
 
@@ -116,64 +116,22 @@ function init() {
     group = new THREE.Group();
     scene.add(group);
 
-    /*var collada = new THREE.ColladaLoader();
-    collada.options.convertUpAxis = true;
-
-    collada.load("ark.dae", function (collada) {
-        transport = collada.scene;
-        transport.scale.x = transport.scale.y = transport.scale.z = 5;
-        //transport.rotation.y = Math.PI / 2;
-        transport.updateMatrix();
-        group.add(transport);
-        start();
+    var zergmaterial = new THREE.ShaderMaterial({
+        uniforms: {
+            texture: {type: 't', value: THREE.ImageUtils.loadTexture('zerg.png')},
+            attributes: {}
+        },
+        vertexShader: document.getElementById('vertexShader').textContent,
+        fragmentShader: document.getElementById('fragmentShader').textContent
     });
-
-    var models = {
-        0: "231.dae",
-        1: "231_shade1.dae",
-        2: "231_shade2.dae",
-        3: "231_shade1(1).dae"
-    };
-
-    collada.load(models[1], function (collada) {
-        zerg = collada.scene;
-        console.log(collada);
-        zerg.scale.x = zerg.scale.y = zerg.scale.z = 0.5;
-        zerg.position.z = camera.position.z - 15;
-        zerg.rotation.x = Math.PI / 2;
-        zerg.rotation.y = Math.PI / 2;
-
-        zerg.traverse(function (child) {
-            if (child instanceof THREE.SkinnedMesh) {
-                var animation = new THREE.Animation(child, "name");
-                console.log(animation);
-                animation.timeScale = 0.05;
-                animation.play();
-            }
-        });
-        zerg.updateMatrix();
-        window.zerg = zerg;
-        scene.add(zerg);
-        start();
-    });*/
-
-    var texture = new THREE.ImageUtils.loadTexture("zerg.png");
-
-    var zergmaterial = new THREE.MeshPhongMaterial({
-        aoMap : texture,
-        map : texture
-    });
-
 
 
     var loader = new THREE.JSONLoader();
-    loader.load("231.json", function (geometry, materials) {
-        var material = new THREE.MeshFaceMaterial(materials);
-        console.log(material);
-        console.log(materials);
-        zerg = new THREE.SkinnedMesh(geometry,  material);
+    loader.load("231.json", function (geometry) {
+        geometry.computeVertexNormals();
+        zerg = new THREE.SkinnedMesh(geometry,  zergmaterial);
         zerg.scale.x = zerg.scale.y = zerg.scale.z = 0.5;
-        zerg.position.z = camera.position.z - 15;
+        zerg.position.z = camera.position.z - 10;
         zerg.rotation.x = Math.PI / 2;
         zerg.rotation.y = Math.PI / 2;
         scene.add(zerg);
@@ -188,7 +146,6 @@ function init() {
     texture.wrapT = THREE.MirroredRepeatWrapping;
     texture.repeat.x = 8;
     texture.repeat.y = 7;
-
 
     var material = new THREE.MeshBasicMaterial({
         map: texture,
@@ -326,6 +283,8 @@ function render() {
     controls.update(delta);
 
     if (zerg) {
+        zerg.rotation.y += 0.01;
+        zerg.rotation.x += 0.02;
         //movingTo(length - camera.position.length());
     }
 
