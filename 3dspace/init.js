@@ -143,7 +143,7 @@ function init() {
         console.log(zerg);
 
         window.animation = new THREE.Animation(zerg, geometry.animations[0]);
-        //animation.play();
+        animation.play();
         animation.timeScale = 1;
 
         helper = new THREE.SkeletonHelper(zerg);
