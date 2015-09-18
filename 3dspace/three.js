@@ -19162,7 +19162,11 @@ THREE.ShaderLib = {
 
 				THREE.ShaderChunk[ "fog_fragment" ],
 
-			"	gl_FragColor = vec4( outgoingLight, diffuseColor.a );",
+			"	//gl_FragColor = vec4( outgoingLight, diffuseColor.a );",
+			"	vec2 uv = normalize(vNormal).xy * 0.5 + 0.5;",
+
+			"	vec3 color = texture2D( normalMap, uv ).rgb;",
+			"	gl_FragColor = vec4( color, 1.0 );",
 
 			"}"
 

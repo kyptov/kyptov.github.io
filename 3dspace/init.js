@@ -11,7 +11,7 @@ var MARGIN = 0;
 var SCREEN_HEIGHT = window.innerHeight - MARGIN * 2;
 var SCREEN_WIDTH = window.innerWidth;
 
-var container, camera, controls, scene, space, texture,
+var container, camera, controls, scene, space, texture, helper,
     renderer, transport, dirLight, fps, sphere, zerg, group;
 
 var clock = new THREE.Clock();
@@ -90,8 +90,9 @@ function addControl() {
 function init() {
 
     camera = new THREE.PerspectiveCamera(25, SCREEN_WIDTH / SCREEN_HEIGHT, 1, 1e7);
-    camera.position.z = 10000;
-    camera.position.x = 0;
+    //camera.position.z = 10000;
+    camera.position.y = 16;
+    camera.lookAt(new THREE.Vector3(0,0,0));
 
     scene = new THREE.Scene();
     scene.fog = new THREE.FogExp2(0x03020F, 0.0005);
@@ -118,26 +119,42 @@ function init() {
 
     var zergmaterial = new THREE.ShaderMaterial({
         uniforms: {
-            texture: {type: 't', value: THREE.ImageUtils.loadTexture('zerg.png')},
-            attributes: {}
+            texture: {type: 't', value: THREE.ImageUtils.loadTexture('zerg.png')}
         },
+        skinning: true,
+        needsUpdate: true,
         vertexShader: document.getElementById('vertexShader').textContent,
         fragmentShader: document.getElementById('fragmentShader').textContent
     });
 
 
+    var material1 = new THREE.MeshPhongMaterial({
+        normalMap: THREE.ImageUtils.loadTexture('zerg.png'),
+        skinning: true
+    });
+
+
     var loader = new THREE.JSONLoader();
     loader.load("231.json", function (geometry) {
+
         geometry.computeVertexNormals();
-        zerg = new THREE.SkinnedMesh(geometry,  zergmaterial);
+        zerg = new THREE.SkinnedMesh(geometry,  material1);
+        window.zerg = zerg;
+        console.log(zerg);
+
+        window.animation = new THREE.Animation(zerg, geometry.animations[0]);
+        animation.play();
+        animation.timeScale = 1;
+
+        helper = new THREE.SkeletonHelper(zerg);
+        helper.material.lineWidth = 3;
+        scene.add(helper);
+        helper.visible = true;
+
         zerg.scale.x = zerg.scale.y = zerg.scale.z = 0.5;
-        zerg.position.z = camera.position.z - 10;
-        zerg.rotation.x = Math.PI / 2;
-        zerg.rotation.y = Math.PI / 2;
         scene.add(zerg);
         start();
     });
-
 
     var geometry = new THREE.SphereGeometry(25000, 32, 32);
     geometry.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));
@@ -254,37 +271,27 @@ function render() {
 
     var delta = clock.getDelta();
 
-    if (raise) {
-        random -= delta;
-        if (random < -1) {
-            random = -1;
-            raise = !raise;
-        }
-    } else {
-        random += delta;
-        if (random > 1) {
-            random = 1;
-            raise = !raise;
-        }
-    }
 
-    var length = camera.position.length();
+    helper.update();
+
+    //var length = camera.position.length();
 
     THREE.AnimationHandler.update(delta);
 
-    if (!contact && length <= 200) {
+   /* if (!contact && length <= 200) {
         contact = true;
         var center = new THREE.Vector3(0, 0, 0);
         camera.lookAt(center);
         render2();
         return;
-    }
+    }*/
 
     controls.update(delta);
 
     if (zerg) {
+        //zerg.updateAnimation(delta);
         zerg.rotation.y += 0.01;
-        zerg.rotation.x += 0.02;
+        //zerg.rotation.x += 0.02;
         //movingTo(length - camera.position.length());
     }
 
