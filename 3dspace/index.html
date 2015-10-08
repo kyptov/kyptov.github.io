@@ -58,67 +58,15 @@
         }
 
     </style>
-    <script type="x-shader/x-vertex" id="vertexShader">
-
-	//varying vec3 vNormal;
-
-	uniform mat4 bindMatrix;
-    uniform mat4 bindMatrixInverse;
-    uniform mat4 boneGlobalMatrices[ MAX_BONES ];
-
-    mat4 getBoneMatrix( const in float i ) {
-        mat4 bone = boneGlobalMatrices[ int(i) ];
-        return bone;
-    }
-
-    void main() {
-
-        mat4 boneMatX = getBoneMatrix( skinIndex.x );
-        mat4 boneMatY = getBoneMatrix( skinIndex.y );
-        mat4 boneMatZ = getBoneMatrix( skinIndex.z );
-        mat4 boneMatW = getBoneMatrix( skinIndex.w );
-
-        mat4 skinMatrix = mat4( 0.0 );
-        skinMatrix += skinWeight.x * boneMatX;
-        skinMatrix += skinWeight.y * boneMatY;
-        skinMatrix += skinWeight.z * boneMatZ;
-        skinMatrix += skinWeight.w * boneMatW;
-        skinMatrix  = bindMatrixInverse * skinMatrix * bindMatrix;
-
-        vec3 objectNormal = vec3( normal );
-        objectNormal = vec4( skinMatrix * vec4( objectNormal, 0.0 ) ).xyz;
-
-        //vNormal = normal;
-
-        //gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
-    }
-
-	</script>
-    <script type="x-shader/x-vertex" id="fragmentShader">
-
-	uniform sampler2D texture;
-
-    varying vec3 vNormal;
-
-    void main() {
-
-        vec2 uv = normalize(vNormal).xy*0.5 + 0.5;
-
-        vec3 color = texture2D( texture, uv ).rgb;
-
-        //if ( vNormal.z < - 0.85 ) color = vec3( 0.777, 0.74, 0.74 ); // back of eye
-
-        gl_FragColor = vec4( color, 1.0 );
-
-    }
-
-	</script>
     <script src="jquery.js"></script>
     <script src="three.js"></script>
     <script src="FlyControls.js"></script>
     <script src="ColladaLoader.js"></script>
     <script src="Detector.js"></script>
     <script src="init.js"></script>
+    <script>
+        $.get()
+    </script>
 </head>
 <body>
 <canvas id="space"></canvas>

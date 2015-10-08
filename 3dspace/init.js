@@ -91,7 +91,7 @@ function init() {
 
     camera = new THREE.PerspectiveCamera(25, SCREEN_WIDTH / SCREEN_HEIGHT, 1, 1e7);
     //camera.position.z = 10000;
-    camera.position.y = 16;
+    camera.position.y = 10;
     camera.lookAt(new THREE.Vector3(0,0,0));
 
     scene = new THREE.Scene();
@@ -107,7 +107,7 @@ function init() {
     controls.autoForward = false;
     controls.dragToLook = false;
 
-    dirLight = new THREE.DirectionalLight(0xffffff, 0.5);
+    dirLight = new THREE.DirectionalLight(0xffffff, .5);
     dirLight.position.set(1, 1, 2).normalize();
     scene.add(dirLight);
 
@@ -117,30 +117,22 @@ function init() {
     group = new THREE.Group();
     scene.add(group);
 
-    var zergmaterial = new THREE.ShaderMaterial({
-        uniforms: {
-            texture: {type: 't', value: THREE.ImageUtils.loadTexture('zerg.png')}
-        },
-        skinning: true,
-        needsUpdate: true,
-        vertexShader: document.getElementById('vertexShader').textContent,
-        fragmentShader: document.getElementById('fragmentShader').textContent
-    });
-
-
     var material1 = new THREE.MeshPhongMaterial({
-        normalMap: THREE.ImageUtils.loadTexture('zerg.png'),
-        skinning: true
+        map: THREE.ImageUtils.loadTexture("pirate.jpg")
     });
 
+    /*var material1 = new THREE.MeshLambertMaterial({
+        color: "#FFF"
+    });*/
 
     var loader = new THREE.JSONLoader();
-    loader.load("231.json", function (geometry) {
+    loader.load("mesh.json", function (geometry) {
 
         geometry.computeVertexNormals();
-        zerg = new THREE.SkinnedMesh(geometry,  material1);
+
+        zerg = new THREE.Mesh(geometry, material1);
         window.zerg = zerg;
-        console.log(zerg);
+        /*console.log(zerg);
 
         window.animation = new THREE.Animation(zerg, geometry.animations[0]);
         animation.play();
@@ -149,9 +141,9 @@ function init() {
         helper = new THREE.SkeletonHelper(zerg);
         helper.material.lineWidth = 3;
         scene.add(helper);
-        helper.visible = true;
+        helper.visible = true;*/
 
-        zerg.scale.x = zerg.scale.y = zerg.scale.z = 0.5;
+        zerg.scale.x = zerg.scale.y = zerg.scale.z = 0.8;
         scene.add(zerg);
         start();
     });
@@ -272,7 +264,7 @@ function render() {
     var delta = clock.getDelta();
 
 
-    helper.update();
+    //helper.update();
 
     //var length = camera.position.length();
 
@@ -290,8 +282,8 @@ function render() {
 
     if (zerg) {
         //zerg.updateAnimation(delta);
-        //zerg.rotation.y += 0.01;
-        //zerg.rotation.x += 0.02;
+        zerg.rotation.y += 0.01;
+        zerg.rotation.x += 0.02;
         //movingTo(length - camera.position.length());
     }
 
