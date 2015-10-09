@@ -3,7 +3,7 @@
  */
 "use strict";
 
-if (!Detector.webgl) Detector.addGetWebGLMessage();
+//if (!Detector.webgl) Detector.addGetWebGLMessage();
 
 var intensity = 6;
 
