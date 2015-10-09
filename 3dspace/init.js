@@ -86,16 +86,27 @@ function addControl() {
     });
 }
 
+function loadPirateAnimation() {
+    $.post("pirateGeometry.1.animations.json", "json").done(function (json) {
+        console.log(json);
+
+        window.animation = new THREE.Animation(zerg, json[0]);
+        animation.play();
+        animation.timeScale = 1;
+    });
+}
+
 
 function init() {
 
     camera = new THREE.PerspectiveCamera(25, SCREEN_WIDTH / SCREEN_HEIGHT, 1, 1e7);
     //camera.position.z = 10000;
-    camera.position.y = 10;
+    camera.position.z = 10;
     camera.lookAt(new THREE.Vector3(0,0,0));
 
     scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x03020F, 0.0005);
+    scene.fog = new THREE.Fog(0x03020F, 8, 12);
+    window.fog = scene.fog;
 
     //addControl();
     controls = new THREE.FlyControls(camera);
@@ -118,7 +129,8 @@ function init() {
     scene.add(group);
 
     var material1 = new THREE.MeshPhongMaterial({
-        map: THREE.ImageUtils.loadTexture("pirate.jpg")
+        map: THREE.ImageUtils.loadTexture("pirate.jpg"),
+        skinning: true
     });
 
     /*var material1 = new THREE.MeshLambertMaterial({
@@ -126,24 +138,27 @@ function init() {
     });*/
 
     var loader = new THREE.JSONLoader();
-    loader.load("mesh.json", function (geometry) {
+    loader.load("pirate.json", function (geometry) {
 
         geometry.computeVertexNormals();
 
-        zerg = new THREE.Mesh(geometry, material1);
+        zerg = new THREE.SkinnedMesh(geometry, material1);
         window.zerg = zerg;
-        /*console.log(zerg);
+        console.log(zerg);
 
         window.animation = new THREE.Animation(zerg, geometry.animations[0]);
         animation.play();
-        animation.timeScale = 1;
+        //animation.timeScale = 1;
 
         helper = new THREE.SkeletonHelper(zerg);
         helper.material.lineWidth = 3;
         scene.add(helper);
-        helper.visible = true;*/
+        helper.visible = false;
 
         zerg.scale.x = zerg.scale.y = zerg.scale.z = 0.8;
+        //zerg.rotation.z = Math.PI / 2;
+        zerg.rotation.x = Math.PI / 6;
+        zerg.rotation.y = -0.5;
         scene.add(zerg);
         start();
     });
@@ -264,7 +279,7 @@ function render() {
     var delta = clock.getDelta();
 
 
-    //helper.update();
+    helper.update();
 
     //var length = camera.position.length();
 
@@ -282,8 +297,8 @@ function render() {
 
     if (zerg) {
         //zerg.updateAnimation(delta);
-        zerg.rotation.y += 0.01;
-        zerg.rotation.x += 0.02;
+        zerg.rotation.y += 0.001;
+        //zerg.rotation.x += 0.02;
         //movingTo(length - camera.position.length());
     }
 
