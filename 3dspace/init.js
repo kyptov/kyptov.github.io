@@ -118,12 +118,21 @@ function init() {
     controls.autoForward = false;
     controls.dragToLook = false;
 
-    dirLight = new THREE.DirectionalLight(0xffffff, .5);
-    dirLight.position.set(1, 1, 2).normalize();
-    scene.add(dirLight);
+    var point = new THREE.SpotLight(0xffffff, 2, 20);
+    point.position.set(-3, 2, 1);
+    scene.add(point);
+    window.p = point;
 
-    var light = new THREE.AmbientLight(0x808080); // soft white light
-    scene.add(light);
+    var help = new THREE.SpotLightHelper(point);
+    //scene.add(help);
+
+    dirLight = new THREE.DirectionalLight(0xffffff, .3);
+    dirLight.position.set(-1, 1, 0).normalize();
+    //scene.add(dirLight);
+
+    var light = new THREE.AmbientLight(0x202020); // soft white light
+    //scene.add(light);
+    window.l = dirLight;
 
     group = new THREE.Group();
     scene.add(group);
@@ -142,6 +151,8 @@ function init() {
         geometry.computeVertexNormals();
 
         zerg = new THREE.Mesh(geometry, material1);
+        zerg.castShadow = true;
+        zerg.receiveShadow = true;
         window.zerg = zerg;
         console.log(zerg);
 
@@ -155,10 +166,13 @@ function init() {
         helper.visible = false;*/
 
         zerg.scale.x = zerg.scale.y = zerg.scale.z = 0.5;
-        //zerg.rotation.z = Math.PI / 2;
-        zerg.rotation.x = Math.PI / 6;
-        zerg.rotation.y = -0.5;
-        scene.add(zerg);
+        group.rotation.z = Math.PI / 5;
+        //zerg.rotation.x = Math.PI / 6;
+        //zerg.rotation.y = -0.5;
+
+        group.rotation.z = Math.PI / 5;
+        group.rotation.x = Math.PI / 5;
+        group.add(zerg);
         start();
     });
 
@@ -237,7 +251,7 @@ function init() {
 
     }*/
 
-    renderer = new THREE.WebGLRenderer({canvas: container, antialias: false, alpha: false});
+    renderer = new THREE.WebGLRenderer({canvas: container, antialias: true, alpha: false});
     renderer.setClearColor(0x000000, 0);
     renderer.setPixelRatio(window["devicePixelRatio"]);
     renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
