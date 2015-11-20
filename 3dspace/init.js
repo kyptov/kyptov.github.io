@@ -129,8 +129,7 @@ function init() {
     scene.add(group);
 
     var material1 = new THREE.MeshPhongMaterial({
-        map: THREE.ImageUtils.loadTexture("pirate.jpg"),
-        skinning: true
+        map: THREE.ImageUtils.loadTexture("stantion.jpg")
     });
 
     /*var material1 = new THREE.MeshLambertMaterial({
@@ -138,24 +137,24 @@ function init() {
     });*/
 
     var loader = new THREE.JSONLoader();
-    loader.load("pirate.json", function (geometry) {
+    loader.load("stantion.json", function (geometry) {
 
         geometry.computeVertexNormals();
 
-        zerg = new THREE.SkinnedMesh(geometry, material1);
+        zerg = new THREE.Mesh(geometry, material1);
         window.zerg = zerg;
         console.log(zerg);
 
-        window.animation = new THREE.Animation(zerg, geometry.animations[0]);
+        /*window.animation = new THREE.Animation(zerg, geometry.animations[0]);
         animation.play();
         //animation.timeScale = 1;
 
         helper = new THREE.SkeletonHelper(zerg);
         helper.material.lineWidth = 3;
         scene.add(helper);
-        helper.visible = false;
+        helper.visible = false;*/
 
-        zerg.scale.x = zerg.scale.y = zerg.scale.z = 0.8;
+        zerg.scale.x = zerg.scale.y = zerg.scale.z = 0.5;
         //zerg.rotation.z = Math.PI / 2;
         zerg.rotation.x = Math.PI / 6;
         zerg.rotation.y = -0.5;
@@ -279,11 +278,11 @@ function render() {
     var delta = clock.getDelta();
 
 
-    helper.update();
+    //helper.update();
 
     //var length = camera.position.length();
 
-    THREE.AnimationHandler.update(delta);
+    //THREE.AnimationHandler.update(delta);
 
    /* if (!contact && length <= 200) {
         contact = true;
