@@ -100,7 +100,7 @@ function loadPirateAnimation() {
 function init() {
 
     camera = new THREE.PerspectiveCamera(25, SCREEN_WIDTH / SCREEN_HEIGHT, 1, 1e7);
-    //camera.position.z = 10000;
+    //camera.position.z = 10000; s
     camera.position.z = 10;
     camera.lookAt(new THREE.Vector3(0,0,0));
 
